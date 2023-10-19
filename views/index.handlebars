@@ -1,0 +1,34 @@
+<h2>Página de postagens</h2>
+<div class="bg-light p-5 rounded-lg m-3">
+  <h1 class="display-4">Bem vindo ao blog do nodeJS!</h1>
+  <p class="lead"></p>
+  <hr class="my-4">
+  <p>Java script é uma linguagem de programção interpretada. Foi originalmente implementada como parte dos navegadores web 
+    para que os scripts pudessem ser executados do lado do cliente e interagissem com o usuário sem a necessidade desdte 
+    script passar pelo servidor, controlando o navegador, realizando comunicação assíncrona e alterando o conteúdo do documento 
+    exibido. É atualmente a principal linguagem para programção client-side em navegadores web. COmeça também a ser bastante 
+    ulitlizada do lado do servidor atravéz de ambientes como o node.js. Foi concebida para ser uma linguagem script com orientação a 
+    objetos baseada em protóptipos, tipagem fraca e dinâmica e funções de primeira classe. Possui suporte a programação funcional e 
+    apresenta recursos como fechamento e funções de alta ordem comumente indisponíveis em linguages populares como Java e C++. 
+    É a linguagem de programção mais ulitlizada do mundo. É baseada em ECMAScript padronizada pela Ecma International nas 
+    especificações ECMA-262[3] e ISO/IEC 16262.</p>
+  <a class="btn btn-primary btn-lg" href="#" role="button">Criar uma conta</a>
+</div>
+
+<hr>
+
+<h2>Postagens recentes:</h2>
+{{#each postagens}}
+<div class="card mt-4">
+    <div class="card-body">
+        <h3> {{titulo}} </h3>
+        <p> {{descricao}} </p>
+        <a href="/postagem/{{slug}}"><button class="btn btn-success">Leia mais</button></a>
+        <hr>
+        <small>Categoria: {{categoria.nome}}</small>
+        <small> Data de publicação: {{data}} </small>
+    </div>
+</div>
+{{else}}
+    <h5>Nenhuma postagem</h5>
+{{/each}}
