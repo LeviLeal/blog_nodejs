@@ -4,6 +4,7 @@ const handlebars = require("express-handlebars")
 const bodyParser = require("body-parser")
 const app = express()
 const admin = require("./routes/admin")
+const usuarios = require("./routes/usuario")
 const path = require("path")
 const mongoose = require("mongoose")
 const session = require("express-session")
@@ -93,10 +94,31 @@ app.get("/postagem/:slug", (req, res) => {
 app.get("/categorias/", (req, res) => {
     Categoria.find().lean()
     .then((categorias) => {
-        res.render("categorias", {categorias: categorias})
+        res.render("categorias", {categorias: no})
     }).catch((error) => {
         req.flash("error_msg", "Houve um erro interno ao lista as categorias")
         res.redirect("Página inicial")
+    })
+})
+
+app.get("/categorias/:slug", (req, res) => {
+    Categoria.findOne({slug: req.params.slug}).lean().then((categoria) => {
+        if(categoria) {
+            Postagem.find({categoria: categoria}).lean()    
+            .then((postagens) => {
+                res.render("categorias/postagens", {postagens: postagens, categoria: categoria})
+            })
+            .catch((error) => {
+                req.flash("Houve um erro ao listar os posts")
+                res.redirect("/")
+            })
+        } else {
+            req.flash("error_msg", "Essa categoria não existe")
+            res.redirect("/")
+        }
+    }).catch((error) => {
+        req.flash("error_msg", "Houve um erro interno ao carregar a página desta categoria")
+        res.redirect("/")
     })
 })
 
@@ -105,6 +127,7 @@ app.get("/404", (req, res) => {
 })
 
 app.use("/admin", admin)
+app.use("/usuarios", usuarios)
 
 // EXPRESS PARA RODAR E ESCUTAR A PORTA DEFINIDA
 
