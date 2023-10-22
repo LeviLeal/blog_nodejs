@@ -14,6 +14,8 @@ require("./models/Postagem")
 const Postagem = mongoose.model("postagens")
 require("./models/Categoria")
 const Categoria = mongoose.model("categorias")
+const passport = require("passport")
+require("./config/auth")(passport)
 
 
 // # CONFIGURACOES #
@@ -25,16 +27,29 @@ app.use(session({
     saveUninitialized: true
 }))
 
+app.use(passport.initialize())
+app.use(passport.session({
+    secret: "123",
+    resave: false,
+    saveUninitialized: false,
+    cookie: { maxAge: 30 * 60 * 1000 }
+}))
+
 // ;flash
 app.use(flash())
 
-// ;mensagem do flash
-/* O flash é útil para retornar mensagens após requisições. 
+// ;mensagem do flash / Middlewares
+/* O flash e util para retornar mensagens apos requisicoes. 
     As mensagens são temporárias, então ao recarregar a página, elas somem*/
     
+
+
 app.use((req, res, next) => {
+    // essas variaveis sao globais
     res.locals.success_msg = req.flash("success_msg")
     res.locals.error_msg = req.flash("error_msg")
+    res.locals.error = req.flash("error")
+    res.locals.user  = req.user || null
     next()
 })
 
@@ -94,10 +109,10 @@ app.get("/postagem/:slug", (req, res) => {
 app.get("/categorias/", (req, res) => {
     Categoria.find().lean()
     .then((categorias) => {
-        res.render("categorias", {categorias: no})
+        res.render("categorias", {categorias: categorias})
     }).catch((error) => {
         req.flash("error_msg", "Houve um erro interno ao lista as categorias")
-        res.redirect("Página inicial")
+        res.redirect("/")
     })
 })
 
